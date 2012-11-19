@@ -4,7 +4,7 @@ from django import forms
 from django.core.mail import EmailMultiAlternatives
 from django.template import Context
 from django.template.loader import get_template
-from thecut.emailform.contact import settings
+from thecut.emailform import settings
 
 
 class BaseEmailForm(forms.Form):
