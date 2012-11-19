@@ -1,2 +1,3 @@
 include RELEASE-VERSION
 include README.rst
+graft thecut/news/templates
