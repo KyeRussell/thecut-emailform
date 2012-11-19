@@ -99,7 +99,7 @@ class BaseEmailForm(forms.Form):
         
         return self.to_emails
     
-    def render_body(self, context):
+    def render_email_body(self, context):
         """Renders and returns content for use as an email's body text.
         
         :argument dict context: Context data dictionary to be used when
@@ -119,8 +119,8 @@ class BaseEmailForm(forms.Form):
         context = Context(self.get_email_context_data())
         
         mail = EmailMultiAlternatives(
-            subject=self.get_subject(),
-            body=self.render_body(context),
+            subject=self.get_email_subject(),
+            body=self.render_email_body(context),
             from_email=self.get_from_email(),
             to=self.get_to_emails(),
             headers=self.get_email_headers()
