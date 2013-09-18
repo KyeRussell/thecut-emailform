@@ -17,6 +17,7 @@ class BaseEmailForm(forms.Form):
 
     from_email = settings.DEFAULT_FROM_EMAIL
     to_emails = settings.DEFAULT_TO_EMAILS
+    cc_emails = []
     email_headers = {}
     email_subject = 'Enquiry'
     email_template_name = 'emailform/email.txt'
@@ -102,6 +103,16 @@ class BaseEmailForm(forms.Form):
 
         return self.to_emails
 
+    def get_cc_emails(self):
+        """Returns a list of email addresses for use as an email's ``cc`` value.
+
+        :returns: List of email address strings.
+        :rtype: :py:class:`list`
+
+        """
+
+        return self.cc_emails
+
     def render_email_body(self, context):
         """Renders and returns content for use as an email's body text.
 
@@ -126,6 +137,7 @@ class BaseEmailForm(forms.Form):
             body=self.render_email_body(context),
             from_email=self.get_from_email(),
             to=self.get_to_emails(),
+            cc=self.get_cc_emails(),
             headers=self.get_email_headers()
         )
         mail = EmailMultiAlternatives(**email_kwargs)
