@@ -1,10 +1,11 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from . import settings
+from copy import copy
 from django import forms
 from django.core.mail import EmailMultiAlternatives
 from django.template import Context
 from django.template.loader import get_template
-from thecut.emailform import settings
 
 
 class BaseEmailForm(forms.Form):
@@ -18,8 +19,10 @@ class BaseEmailForm(forms.Form):
     from_email = settings.DEFAULT_FROM_EMAIL
     to_emails = settings.DEFAULT_TO_EMAILS
     cc_emails = []
+    email_context_data = {}
     email_headers = {}
     email_subject = 'Enquiry'
+    email_subject_prefix = settings.EMAIL_SUBJECT_PREFIX
     email_template_name = 'emailform/email.txt'
     error_css_class = 'error'
     label_suffix = ''
@@ -35,6 +38,27 @@ class BaseEmailForm(forms.Form):
             if field.required:
                 field.widget.attrs.update({'required': 'required'})
 
+    def get_email_alternatives(self, context):
+        """Returns a list of tuples used to attach alternative content to the
+        email.
+
+        :returns: A list of tuples.
+        :rtype: :py:class:`list`
+
+        """
+
+        return []
+
+    def get_email_attachments(self):
+        """Returns a list of attachments which will be added to the email.
+
+        :returns: A list.
+        :rtype: :py:class:`list`
+
+        """
+
+        return []
+
     def get_email_context_data(self, **kwargs):
         """Returns a data dictionary for use when rendering the email context.
 
@@ -43,8 +67,10 @@ class BaseEmailForm(forms.Form):
 
         """
 
-        kwargs.update({'form': self})
-        return kwargs
+        context_data = {'form': self}
+        context_data.update(self.email_context_data)
+        context_data.update(**kwargs)
+        return context_data
 
     def get_email_headers(self):
         """Returns a dictionary of values for use as extra email headers.
@@ -54,7 +80,7 @@ class BaseEmailForm(forms.Form):
 
         """
 
-        return self.email_headers
+        return copy(self.email_headers)
 
     def get_email_kwargs(self, **kwargs):
         return kwargs
@@ -71,7 +97,8 @@ class BaseEmailForm(forms.Form):
         if subject is None:
             subject = self.email_subject
 
-        return '%s%s' %(settings.EMAIL_SUBJECT_PREFIX, subject)
+        return '{prefix}{subject}'.format(prefix=self.email_subject_prefix,
+                                          subject=subject)
 
     def get_email_template_name(self):
         """Returns a template name which will be used when rendering the email.
@@ -94,26 +121,28 @@ class BaseEmailForm(forms.Form):
         return self.from_email
 
     def get_to_emails(self):
-        """Returns a list of email addresses for use as an email's ``to`` value.
+        """Returns a list of email addresses for use as an email's ``to``
+        value.
 
         :returns: List of email address strings.
         :rtype: :py:class:`list`
 
         """
 
-        return self.to_emails
+        return copy(self.to_emails)
 
     def get_cc_emails(self):
-        """Returns a list of email addresses for use as an email's ``cc`` value.
+        """Returns a list of email addresses for use as an email's ``cc``
+        value.
 
         :returns: List of email address strings.
         :rtype: :py:class:`list`
 
         """
 
-        return self.cc_emails
+        return copy(self.cc_emails)
 
-    def render_email_body(self, context):
+    def render_email_body(self, context, template_name=None):
         """Renders and returns content for use as an email's body text.
 
         :argument dict context: Context data dictionary to be used when
@@ -123,11 +152,18 @@ class BaseEmailForm(forms.Form):
 
         """
 
-        template = get_template(self.get_email_template_name())
+        if template_name is None:
+            template_name = self.get_email_template_name()
+        template = get_template(template_name)
         return template.render(context)
 
-    def send_email(self):
-        """Construct and send an email for a valid form."""
+    def construct_email(self):
+        """Construct an email for a valid form.
+
+        :returns: Email message instance.
+        :rtype: :py:class:`~django.core.mail.EmailMultiAlternatives`
+
+        """
 
         assert self.is_valid()
 
@@ -138,7 +174,14 @@ class BaseEmailForm(forms.Form):
             from_email=self.get_from_email(),
             to=self.get_to_emails(),
             cc=self.get_cc_emails(),
-            headers=self.get_email_headers()
+            headers=self.get_email_headers(),
+            alternatives=self.get_email_alternatives(context),
+            attachments=self.get_email_attachments(),
         )
-        mail = EmailMultiAlternatives(**email_kwargs)
-        return mail.send()
+        return EmailMultiAlternatives(**email_kwargs)
+
+    def send_email(self, **kwargs):
+        """Construct and send an email for a valid form."""
+
+        mail = self.construct_email()
+        return mail.send(**kwargs)
