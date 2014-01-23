@@ -133,8 +133,8 @@ class BaseEmailForm(forms.Form):
         template = get_template(self.get_email_template_name())
         return template.render(context)
 
-    def send_email(self):
-        """Construct and send an email for a valid form."""
+    def construct_email(self):
+        """Construct an email for a valid form."""
 
         assert self.is_valid()
 
@@ -147,5 +147,10 @@ class BaseEmailForm(forms.Form):
             cc=self.get_cc_emails(),
             headers=self.get_email_headers()
         )
-        mail = EmailMultiAlternatives(**email_kwargs)
-        return mail.send()
+        return EmailMultiAlternatives(**email_kwargs)
+
+    def send_email(self, **kwargs):
+        """Construct and send an email for a valid form."""
+
+        mail = self.construct_email()
+        return mail.send(**kwargs)
