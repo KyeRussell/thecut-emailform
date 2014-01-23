@@ -67,8 +67,9 @@ class BaseEmailForm(forms.Form):
 
         """
 
-        context_data = copy(self.email_context_data)
-        context_data.update(form=self, **kwargs)
+        context_data = {'form': self}
+        context_data.update(self.email_context_data)
+        context_data.update(**kwargs)
         return context_data
 
     def get_email_headers(self):
@@ -157,7 +158,12 @@ class BaseEmailForm(forms.Form):
         return template.render(context)
 
     def construct_email(self):
-        """Construct an email for a valid form."""
+        """Construct an email for a valid form.
+
+        :returns: Email message instance.
+        :rtype: :py:class:`~django.core.mail.EmailMultiAlternatives`
+
+        """
 
         assert self.is_valid()
 
