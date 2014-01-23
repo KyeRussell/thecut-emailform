@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from copy import copy
 from django import forms
 from django.core.mail import EmailMultiAlternatives
 from django.template import Context
@@ -18,6 +19,7 @@ class BaseEmailForm(forms.Form):
     from_email = settings.DEFAULT_FROM_EMAIL
     to_emails = settings.DEFAULT_TO_EMAILS
     cc_emails = []
+    email_context_data = {}
     email_headers = {}
     email_subject = 'Enquiry'
     email_template_name = 'emailform/email.txt'
@@ -43,8 +45,9 @@ class BaseEmailForm(forms.Form):
 
         """
 
-        kwargs.update({'form': self})
-        return kwargs
+        context_data = copy(self.email_context_data)
+        context_data.update(form=self, **kwargs)
+        return context_data
 
     def get_email_headers(self):
         """Returns a dictionary of values for use as extra email headers.
@@ -54,7 +57,7 @@ class BaseEmailForm(forms.Form):
 
         """
 
-        return self.email_headers
+        return copy(self.email_headers)
 
     def get_email_kwargs(self, **kwargs):
         return kwargs
@@ -71,7 +74,8 @@ class BaseEmailForm(forms.Form):
         if subject is None:
             subject = self.email_subject
 
-        return '%s%s' %(settings.EMAIL_SUBJECT_PREFIX, subject)
+        return '{prefix}{subject}'.format(prefix=settings.EMAIL_SUBJECT_PREFIX,
+                                          subject=subject)
 
     def get_email_template_name(self):
         """Returns a template name which will be used when rendering the email.
@@ -94,24 +98,26 @@ class BaseEmailForm(forms.Form):
         return self.from_email
 
     def get_to_emails(self):
-        """Returns a list of email addresses for use as an email's ``to`` value.
+        """Returns a list of email addresses for use as an email's ``to``
+        value.
 
         :returns: List of email address strings.
         :rtype: :py:class:`list`
 
         """
 
-        return self.to_emails
+        return copy(self.to_emails)
 
     def get_cc_emails(self):
-        """Returns a list of email addresses for use as an email's ``cc`` value.
+        """Returns a list of email addresses for use as an email's ``cc``
+        value.
 
         :returns: List of email address strings.
         :rtype: :py:class:`list`
 
         """
 
-        return self.cc_emails
+        return copy(self.cc_emails)
 
     def render_email_body(self, context):
         """Renders and returns content for use as an email's body text.
