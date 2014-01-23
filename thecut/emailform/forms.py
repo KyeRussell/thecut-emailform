@@ -38,6 +38,27 @@ class BaseEmailForm(forms.Form):
             if field.required:
                 field.widget.attrs.update({'required': 'required'})
 
+    def get_email_alternatives(self, context):
+        """Returns a list of tuples used to attach alternative content to the
+        email.
+
+        :returns: A list of tuples.
+        :rtype: :py:class:`list`
+
+        """
+
+        return []
+
+    def get_email_attachments(self):
+        """Returns a list of attachments which will be added to the email.
+
+        :returns: A list.
+        :rtype: :py:class:`list`
+
+        """
+
+        return []
+
     def get_email_context_data(self, **kwargs):
         """Returns a data dictionary for use when rendering the email context.
 
@@ -145,7 +166,9 @@ class BaseEmailForm(forms.Form):
             from_email=self.get_from_email(),
             to=self.get_to_emails(),
             cc=self.get_cc_emails(),
-            headers=self.get_email_headers()
+            headers=self.get_email_headers(),
+            alternatives=self.get_email_alternatives(context),
+            attachments=self.get_email_attachments(),
         )
         return EmailMultiAlternatives(**email_kwargs)
 
