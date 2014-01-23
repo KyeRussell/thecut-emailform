@@ -141,7 +141,7 @@ class BaseEmailForm(forms.Form):
 
         return copy(self.cc_emails)
 
-    def render_email_body(self, context):
+    def render_email_body(self, context, template_name=None):
         """Renders and returns content for use as an email's body text.
 
         :argument dict context: Context data dictionary to be used when
@@ -151,7 +151,9 @@ class BaseEmailForm(forms.Form):
 
         """
 
-        template = get_template(self.get_email_template_name())
+        if template_name is None:
+            template_name = self.get_email_template_name()
+        template = get_template(template_name)
         return template.render(context)
 
     def construct_email(self):
