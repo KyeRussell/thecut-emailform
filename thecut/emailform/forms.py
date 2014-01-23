@@ -22,6 +22,7 @@ class BaseEmailForm(forms.Form):
     email_context_data = {}
     email_headers = {}
     email_subject = 'Enquiry'
+    email_subject_prefix = settings.EMAIL_SUBJECT_PREFIX
     email_template_name = 'emailform/email.txt'
     error_css_class = 'error'
     label_suffix = ''
@@ -74,7 +75,7 @@ class BaseEmailForm(forms.Form):
         if subject is None:
             subject = self.email_subject
 
-        return '{prefix}{subject}'.format(prefix=settings.EMAIL_SUBJECT_PREFIX,
+        return '{prefix}{subject}'.format(prefix=self.email_subject_prefix,
                                           subject=subject)
 
     def get_email_template_name(self):
