@@ -28,16 +28,6 @@ class BaseEmailForm(forms.Form):
     label_suffix = ''
     required_css_class = 'required'
 
-    def __init__(self, *args, **kwargs):
-        super(BaseEmailForm, self).__init__(*args, **kwargs)
-
-        # HTML5 input types and attributes
-        for field in self.fields.values():
-            if isinstance(field, forms.EmailField):
-                field.widget.input_type = 'email'
-            if field.required:
-                field.widget.attrs.update({'required': 'required'})
-
     def get_email_alternatives(self, context):
         """Returns a list of tuples used to attach alternative content to the
         email.
