@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
 from . import settings
+from collections import OrderedDict
 from copy import copy
 from django import forms
 from django.core.mail import EmailMultiAlternatives
@@ -57,10 +58,19 @@ class BaseEmailForm(forms.Form):
 
         """
 
-        context_data = {'form': self}
+        context_data = {'form': self,
+                        'form_fields': self.get_email_form_fields()}
         context_data.update(self.email_context_data)
         context_data.update(**kwargs)
         return context_data
+
+    def get_email_form_fields(self):
+        data = OrderedDict()
+        for field in self:
+            cleaned_data = self.cleaned_data.get(field.name, None)
+            data.update({field.name: {'field': field, 'label': field.label,
+                                      'cleaned_data': cleaned_data}})
+        return data
 
     def get_email_headers(self):
         """Returns a dictionary of values for use as extra email headers.
