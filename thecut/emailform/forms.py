@@ -18,6 +18,7 @@ class BaseEmailForm(forms.Form):
     """
 
     from_email = settings.DEFAULT_FROM_EMAIL
+    reply_to_emails = []
     to_emails = settings.DEFAULT_TO_EMAILS
     cc_emails = []
     email_context_data = {}
@@ -83,6 +84,14 @@ class BaseEmailForm(forms.Form):
         return copy(self.email_headers)
 
     def get_email_kwargs(self, **kwargs):
+
+        # Here we raise an exception if the 'reply_to' kwarg is provided, but
+        # is not available on EmailMultiAlternatives (Django versions < 1.8).
+        if kwargs.get('reply_to', False) and not hasattr(
+                EmailMultiAlternatives(), 'reply_to'):
+            raise NotImplementedError('The reply_to kwarg is not supported '
+                                      'with this version of Django.')
+
         return kwargs
 
     def get_email_subject(self, subject=None):
@@ -119,6 +128,17 @@ class BaseEmailForm(forms.Form):
         """
 
         return self.from_email
+
+    def get_reply_to_emails(self):
+        """Returns a list of email addresses for use as an email's ``reply_to``
+        value.
+
+        :returns: List of email address strings.
+        :rtype: :py:class:`list`
+
+        """
+
+        return copy(self.reply_to_emails)
 
     def get_to_emails(self):
         """Returns a list of email addresses for use as an email's ``to``
@@ -172,6 +192,7 @@ class BaseEmailForm(forms.Form):
             subject=self.get_email_subject(),
             body=self.render_email_body(context),
             from_email=self.get_from_email(),
+            reply_to=self.get_reply_to_emails(),
             to=self.get_to_emails(),
             cc=self.get_cc_emails(),
             headers=self.get_email_headers(),
