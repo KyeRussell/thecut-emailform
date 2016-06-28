@@ -8,5 +8,4 @@ setup(name='thecut-emailform',
       namespace_packages=['thecut'],
       version=get_git_version(),
       packages=find_packages(),
-      include_package_data=True,
-)
+      include_package_data=True)
