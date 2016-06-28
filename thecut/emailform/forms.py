@@ -84,14 +84,6 @@ class BaseEmailForm(forms.Form):
         return copy(self.email_headers)
 
     def get_email_kwargs(self, **kwargs):
-
-        # Here we raise an exception if the 'reply_to' kwarg is provided, but
-        # is not available on EmailMultiAlternatives (Django versions < 1.8).
-        if kwargs.get('reply_to', False) and not hasattr(
-                EmailMultiAlternatives(), 'reply_to'):
-            raise NotImplementedError('The reply_to kwarg is not supported '
-                                      'with this version of Django.')
-
         return kwargs
 
     def get_email_subject(self, subject=None):
