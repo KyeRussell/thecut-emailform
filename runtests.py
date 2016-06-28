@@ -22,6 +22,9 @@ try:
         ],
         SITE_ID=1,
         MIDDLEWARE_CLASSES=(),
+        EMAILFORM_DEFAULT_TO_EMAILS=['mail@example.com'],
+        DEFAULT_FROM_EMAIL='from@example.com',
+        EMAIL_SUBJECT_PREFIX='[thecut-emailform test suite] '
     )
 
     try:
