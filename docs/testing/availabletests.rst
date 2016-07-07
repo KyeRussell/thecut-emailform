@@ -2,9 +2,6 @@
 Available tests
 ===============
 
-..
-  ``TestCaseName``
-  -----------------
 
-  .. autoclass:: thecut.exampleapp.tests.module.TestClassName
-    :members:
+.. autoclass:: thecut.emailform.tests.test_forms.TestBaseEmailForm
+  :members:
