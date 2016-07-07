@@ -9,7 +9,7 @@ from mock import patch
 
 class TestBaseEmailForm(TestCase):
 
-    """Tests for the BaseEmailForm form."""
+    """Tests for the :py:class:`thecut.emailform.forms.BaseEmailForm`` form."""
 
     def setUp(self):
         self.form = EmailForm({'foo': 'bar'})
@@ -29,7 +29,7 @@ class TestBaseEmailForm(TestCase):
 
     @override_settings(EMAILFORM_DEFAULT_TO_EMAILS=['mail@example.com'])
     def test_sends_to_default_address(self):
-        """Send email to default address (EMAILFORM_DEFAULT_TO_EMAILS)."""
+        """Send email to default address (``EMAILFORM_DEFAULT_TO_EMAILS``)."""
         self.form.send_email()
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].to, ['mail@example.com'])
@@ -44,7 +44,7 @@ class TestBaseEmailForm(TestCase):
     # Defining email sender
 
     def test_sends_from_default_django_address(self):
-        """Send email from default Django address (DEFAULT_FROM_EMAIL)."""
+        """Send email from default Django address (``DEFAULT_FROM_EMAIL``)."""
         self.form.send_email()
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].from_email, 'from@example.com')
@@ -59,13 +59,13 @@ class TestBaseEmailForm(TestCase):
     # Defining reply-to
 
     def test_sends_with_empty_reply_to_by_default(self):
-        """Send email with an empty reply-to header by default."""
+        """Send email with an empty ``reply-to`` header by default."""
         self.form.send_email()
         self.assertEqual(len(mail.outbox), 1)
         self.assertFalse(mail.outbox[0].reply_to)
 
     def test_sends_with_reply_to(self):
-        """Send email with a reply-to header when defined."""
+        """Send email with a ``reply-to`` header when defined."""
         self.form.reply_to_emails = ['reply-to@example.com']
         self.form.send_email()
         self.assertEqual(len(mail.outbox), 1)
@@ -74,13 +74,13 @@ class TestBaseEmailForm(TestCase):
     # Defining CC (carbon copy)
 
     def test_sends_with_empty_cc_by_default(self):
-        """Send email with an empty CC header by default."""
+        """Send email with an empty ``CC`` header by default."""
         self.form.send_email()
         self.assertEqual(len(mail.outbox), 1)
         self.assertFalse(mail.outbox[0].cc)
 
     def test_sends_with_reply_to(self):
-        """Send email with a reply-to header when defined."""
+        """Send email with a ``CC`` header when defined."""
         self.form.cc_emails = ['cc@example.com']
         self.form.send_email()
         self.assertEqual(len(mail.outbox), 1)
