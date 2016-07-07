@@ -79,7 +79,7 @@ class TestBaseEmailForm(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertFalse(mail.outbox[0].cc)
 
-    def test_sends_with_reply_to(self):
+    def test_sends_with_cc(self):
         """Send email with a ``CC`` header when defined."""
         self.form.cc_emails = ['cc@example.com']
         self.form.send_email()
