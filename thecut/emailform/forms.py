@@ -18,14 +18,36 @@ class BaseEmailForm(forms.Form):
     """
 
     from_email = settings.DEFAULT_FROM_EMAIL
+    """The email address to send email to."""
+
     reply_to_emails = []
+    """A list of email addresses to include in the ``Reply-To`` header of the
+    email."""
+
     to_emails = settings.DEFAULT_TO_EMAILS
+    """A list of email addresses to send the email to."""
+
     cc_emails = []
+    """A list of email addresses to CC the email to."""
+
     email_context_data = {}
+    """Data to pass to the template context when generating the email body."""
+
     email_headers = {}
+    """Any custom headers to attach to the email."""
+
     email_subject = 'Enquiry'
+    """The email's subject."""
+
     email_subject_prefix = settings.EMAIL_SUBJECT_PREFIX
+    """The email's subject prefix. This is attached directly to the start of
+    :py:attr:`thecut.emailform.forms.BaseEmailForm.email_subject` to form
+    the email's subject."""
+
     email_template_name = 'emailform/email.txt'
+    """The path to a Django template that should be used to generate the email
+    body."""
+
     error_css_class = 'error'
     label_suffix = ''
     required_css_class = 'required'
