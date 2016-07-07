@@ -16,6 +16,12 @@ thecut-emailform
 Django class-based view and form to send enquiry emails.
 
 
+Features
+--------
+
+    * ...
+
+
 Documentation
 -------------
 
@@ -25,12 +31,10 @@ The full documentation is at https://thecut-emailform.readthedocs.org.
 Quickstart
 ----------
 
-Install thecut-emailform::
-
-    pip install thecut-emailform
+Install ``thecut-emailform`` using the :ref:`installation`.
 
 
 Credits
 -------
 
-See ``AUTHORS.rst`` for credits.
+See :ref:`credits`.
