@@ -19,10 +19,10 @@ Django class-based view and form to send enquiry emails.
 Features
 --------
 
-    * Send emails using a regular Django form.
-    * Use Django templates to generate your email's body.
-    * Send HTML / multi-part emails.
-    * Add email headers like ``Cc``, ``Bcc``, and ``Reply-To``.
+* Send emails using a regular Django form.
+* Use Django templates to generate your email's body.
+* Send HTML / multi-part emails.
+* Add email headers like ``Cc``, ``Bcc``, and ``Reply-To``.
 
 
 Documentation
