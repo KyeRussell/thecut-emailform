@@ -117,3 +117,9 @@ class TestBaseEmailForm(TestCase):
         self.assertEqual(len(mail.outbox), 1)
         self.assertEqual(mail.outbox[0].subject,
                          '[thecut-emailform test suite] ')
+
+    def test_overriding_default_subject(self):
+        """Send email with an overridden subject prefix."""
+        self.form.email_subject_prefix = '[Overridden] '
+        self.assertEqual(self.form.get_email_subject('Not default'),
+                         '[Overridden] Not default')
