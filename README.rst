@@ -57,4 +57,4 @@ Quickstart
 Credits
 -------
 
-See :ref:`credits`.
+See ``AUTHORS.rst``.
