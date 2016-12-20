@@ -1,5 +1,6 @@
 # -*- coding: utf-8 -*-
 from __future__ import absolute_import, unicode_literals
+from django.template import TemplateDoesNotExist
 from test_app.forms import EmailForm
 from django.core import mail
 from django.test import TestCase
@@ -123,3 +124,9 @@ class TestBaseEmailForm(TestCase):
         self.form.email_subject_prefix = '[Overridden] '
         self.assertEqual(self.form.get_email_subject('Not default'),
                          '[Overridden] Not default')
+
+    
+    def test_overriding_template_name(self):
+        with self.assertRaises(TemplateDoesNotExist):
+            self.form.render_email_body(dict(), 'custom_template.html')
+            #self.assertEqual(mock_get_template.call_count, 1)
