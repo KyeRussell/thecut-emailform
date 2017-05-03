@@ -201,7 +201,7 @@ class BaseEmailForm(forms.Form):
 
         assert self.is_valid()
 
-        context = Context(self.get_email_context_data())
+        context = dict(self.get_email_context_data())
         email_kwargs = self.get_email_kwargs(
             subject=self.get_email_subject(),
             body=self.render_email_body(context),
