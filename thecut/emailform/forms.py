@@ -5,7 +5,6 @@ from collections import OrderedDict
 from copy import copy
 from django import forms
 from django.core.mail import EmailMultiAlternatives
-from django.template import Context
 from django.template.loader import get_template
 
 
