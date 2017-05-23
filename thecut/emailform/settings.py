@@ -7,7 +7,7 @@ DEFAULT_FROM_EMAIL = getattr(settings, 'EMAILFORM_DEFAULT_FROM_EMAIL',
                              settings.DEFAULT_FROM_EMAIL)
 
 DEFAULT_TO_EMAIL = getattr(settings, 'EMAILFORM_DEFAULT_TO_EMAIL',
-                           getattr(settings, 'DEFAULT_TO_EMAIL',  None))
+                           getattr(settings, 'DEFAULT_TO_EMAIL', None))
 
 DEFAULT_TO_EMAILS = getattr(
     settings, 'EMAILFORM_DEFAULT_TO_EMAILS',

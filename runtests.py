@@ -24,7 +24,19 @@ try:
         MIDDLEWARE_CLASSES=(),
         EMAILFORM_DEFAULT_TO_EMAILS=['mail@example.com'],
         DEFAULT_FROM_EMAIL='from@example.com',
-        EMAIL_SUBJECT_PREFIX='[thecut-emailform test suite] '
+        EMAIL_SUBJECT_PREFIX='[thecut-emailform test suite] ',
+        TEMPLATES=[
+            {
+                'BACKEND': 'django.template.backends.django.DjangoTemplates',
+                'OPTIONS': {
+                    'loaders': [
+                        ('django.template.loaders.cached.Loader',
+                         ['django.template.loaders.filesystem.Loader',
+                          'django.template.loaders.app_directories.Loader'])
+                    ],
+                },
+            },
+        ],
     )
 
     try:

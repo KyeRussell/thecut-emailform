@@ -5,7 +5,6 @@ from collections import OrderedDict
 from copy import copy
 from django import forms
 from django.core.mail import EmailMultiAlternatives
-from django.template import Context
 from django.template.loader import get_template
 
 
@@ -18,14 +17,36 @@ class BaseEmailForm(forms.Form):
     """
 
     from_email = settings.DEFAULT_FROM_EMAIL
+    """The email address to send email to."""
+
     reply_to_emails = []
+    """A list of email addresses to include in the ``Reply-To`` header of the
+    email."""
+
     to_emails = settings.DEFAULT_TO_EMAILS
+    """A list of email addresses to send the email to."""
+
     cc_emails = []
+    """A list of email addresses to CC the email to."""
+
     email_context_data = {}
+    """Data to pass to the template context when generating the email body."""
+
     email_headers = {}
+    """Any custom headers to attach to the email."""
+
     email_subject = 'Enquiry'
+    """The email's subject."""
+
     email_subject_prefix = settings.EMAIL_SUBJECT_PREFIX
+    """The email's subject prefix. This is attached directly to the start of
+    :py:attr:`thecut.emailform.forms.BaseEmailForm.email_subject` to form
+    the email's subject."""
+
     email_template_name = 'emailform/email.txt'
+    """The path to a Django template that should be used to generate the email
+    body."""
+
     error_css_class = 'error'
     label_suffix = ''
     required_css_class = 'required'
@@ -84,14 +105,6 @@ class BaseEmailForm(forms.Form):
         return copy(self.email_headers)
 
     def get_email_kwargs(self, **kwargs):
-
-        # Here we raise an exception if the 'reply_to' kwarg is provided, but
-        # is not available on EmailMultiAlternatives (Django versions < 1.8).
-        if kwargs.get('reply_to', False) and not hasattr(
-                EmailMultiAlternatives(), 'reply_to'):
-            raise NotImplementedError('The reply_to kwarg is not supported '
-                                      'with this version of Django.')
-
         return kwargs
 
     def get_email_subject(self, subject=None):
@@ -187,7 +200,8 @@ class BaseEmailForm(forms.Form):
 
         assert self.is_valid()
 
-        context = Context(self.get_email_context_data())
+        context = self.get_email_context_data()
+
         email_kwargs = self.get_email_kwargs(
             subject=self.get_email_subject(),
             body=self.render_email_body(context),
