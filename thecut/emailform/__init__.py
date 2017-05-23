@@ -13,4 +13,5 @@ __copyright__ = 'Copyright 2012-2017 Busara Perth Pty Ltd'
 
 __license__ = 'Apache 2.0'
 
-# default_app_config = 'thecut.emailform.apps.AppConfig'
+
+default_app_config = 'thecut.emailform.apps.AppConfig'
